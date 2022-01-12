@@ -6,6 +6,8 @@ import org.opencv.core.Point;
 import org.opencv.core.Scalar;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
+import java.awt.*;
+import java.awt.event.*;
 
 public class SampleTampletMatching {
 	
@@ -15,10 +17,11 @@ public class SampleTampletMatching {
 	        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 	        Mat source=null;
 	        Mat template=null;
-	        String filePath="C:/Users/sku/Desktop/obdtest/";
+	        //String filePath="C:/Users/sku/Desktop/obdtest/";
+	        String filePath="C:/Users/cpfld/git/Macros/src/satisfactionSurvey/";
 	        //Load image file
-	        source=Imgcodecs.imread(filePath+"image01.png");
-	        template=Imgcodecs.imread(filePath+"button.png");
+	        source=Imgcodecs.imread(filePath+"test_src.png");
+	        template=Imgcodecs.imread(filePath+"test_templit.png");
 	    
 	        Mat outputImage=new Mat();    
 	        int machMethod=Imgproc.TM_CCORR_NORMED;
@@ -30,10 +33,40 @@ public class SampleTampletMatching {
 	        Point matchLoc=mmr.maxLoc;
 	        //Draw rectangle on result image
 	        Imgproc.rectangle(source, matchLoc, new Point(matchLoc.x + template.cols(),
-	                matchLoc.y + template.rows()), new Scalar(255, 255, 255));
+	                matchLoc.y + template.rows()), new Scalar(0, 255, 255));
+	        
+	        System.out.println(matchLoc.x +" " +matchLoc.y);
+	        System.out.println(template.cols() +" " +template.rows());
+
+
+
 	 
 	        Imgcodecs.imwrite(filePath+"sonuc.jpg", source);
 	        System.out.println("Complated.");
+	        
+	        
+	        try {
+	            
+	            Robot robot = new Robot();
+	           
+	            //robot.delay(5000); //5초 딜레이
+	           
+	            
+	            //robot.keyPress(KeyEvent.VK_O);
+	           
+	            Rectangle screenRect = new Rectangle();
+	            //커서를 절대좌표 300,300으로 이동
+	            robot.mouseMove(672, 1162);
+	            robot.delay(5000);
+	            robot.createScreenCapture(screenRect);
+	            robot.mouseMove(789, 1307);
+	            
+	        } catch (AWTException e) {
+	            e.printStackTrace();
+	        }
 	    }
+	
+	 
 
-}
+
+	    }
