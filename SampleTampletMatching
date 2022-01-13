@@ -8,65 +8,217 @@ import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
 
 public class SampleTampletMatching {
 	
 	 public static void main(String[] args) {
 	        
-			//System.load("C:/Users/sku/Downloads/OpenCV/build/java/x64/opencv_java455.dll");
-	        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-	        Mat source=null;
-	        Mat template=null;
-	        //String filePath="C:/Users/sku/Desktop/obdtest/";
-	        String filePath="C:/Users/cpfld/git/Macros/src/satisfactionSurvey/";
-	        //Load image file
-	        source=Imgcodecs.imread(filePath+"test_src.png");
-	        template=Imgcodecs.imread(filePath+"test_templit.png");
-	    
-	        Mat outputImage=new Mat();    
-	        int machMethod=Imgproc.TM_CCORR_NORMED;
-	        //Template matching method
-	        Imgproc.matchTemplate(source, template, outputImage, machMethod);
-	 
-	    
-	        MinMaxLocResult mmr = Core.minMaxLoc(outputImage);
-	        Point matchLoc=mmr.maxLoc;
-	        //Draw rectangle on result image
-	        Imgproc.rectangle(source, matchLoc, new Point(matchLoc.x + template.cols(),
-	                matchLoc.y + template.rows()), new Scalar(0, 255, 255));
 	        
-	        System.out.println(matchLoc.x +" " +matchLoc.y);
-	        System.out.println(template.cols() +" " +template.rows());
-
-
-
-	 
-	        Imgcodecs.imwrite(filePath+"sonuc.jpg", source);
-	        System.out.println("Complated.");
-	        
-	        
-	        try {
-	            
+	        try {        	
 	            Robot robot = new Robot();
-	           
-	            //robot.delay(5000); //5초 딜레이
-	           
+
+	            Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		        System.out.println(screenSize);
+		        Rectangle screenRectangle = new Rectangle(screenSize);
+		        BufferedImage image = robot.createScreenCapture(screenRectangle);
+		        File file = new File("C:/Users/sku/Desktop/obdtest/src.png");
+		        
+		        try {
+					ImageIO.write(image, "png", file);
+
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+				//System.load("C:/Users/sku/Downloads/OpenCV/build/java/x64/opencv_java455.dll");
+		        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+		        Mat source=null;
+		        Mat template=null;
+		        String filePath="C:/Users/sku/Desktop/obdtest/";
+		        //String filePath="C:/Users/cpfld/git/Macros/src/satisfactionSurvey/";
+		        //Load image file
+		        source=Imgcodecs.imread(filePath+"src.png");
+		        //template=Imgcodecs.imread(filePath+"templit.png");
+		        template=Imgcodecs.imread(filePath+"1_1.png");
+
+		        Mat outputImage=new Mat();    
+		        int machMethod=Imgproc.TM_CCOEFF_NORMED;
+		        //Template matching method
+		        Imgproc.matchTemplate(source, template, outputImage, machMethod);
+		 
+		    
+		        MinMaxLocResult mmr = Core.minMaxLoc(outputImage);
+		        Point matchLoc=mmr.maxLoc;
+		        //Draw rectangle on result image
+		        Imgproc.rectangle(source, matchLoc, new Point(matchLoc.x + template.cols(),
+		                matchLoc.y + template.rows()), new Scalar(0, 255, 255));
+		        
+		        System.out.println(matchLoc.x +" " +matchLoc.y);
+		        System.out.println(template.cols() +" " +template.rows());
+
+		        Imgcodecs.imwrite(filePath+"sonuc.jpg", source);
+		        System.out.println("Complated."); 
+		        
 	            
 	            //robot.keyPress(KeyEvent.VK_O);
 	           
-	            Rectangle screenRect = new Rectangle();
-	            //커서를 절대좌표 300,300으로 이동
-	            robot.mouseMove(672, 1162);
-	            robot.delay(5000);
-	            robot.createScreenCapture(screenRect);
-	            robot.mouseMove(789, 1307);
+	            /*
 	            
-	        } catch (AWTException e) {
+	            //커서를 절대좌표 x,y로 이동
+		        
+		        int mid_x = (int)matchLoc.x + (template.cols()/2);
+		        int mid_y = (int)matchLoc.y + (template.rows()/2);
+
+	            robot.mouseMove(mid_x, mid_y);
+	            robot.delay(1000);
+	            robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
+	            robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+	            robot.delay(1000);
+	            
+	            
+	            PointerInfo pt;
+	            pt = MouseInfo.getPointerInfo();
+	        	System.out.println(pt.getLocation());
+	            
+	            
+		        robot.delay(2000);
+	            robot.mouseWheel(1);
+		        for(int i = 0; i<3; i++)
+	            {		        
+		        	robot.delay(3000);
+		        	pt = MouseInfo.getPointerInfo();
+		        	System.out.println("1번문항_"+i+" : " + pt.getLocation());
+		        }
+	            
+		        robot.delay(2000);
+	            robot.mouseWheel(4);
+		        robot.delay(3000);
+		        for(int i = 0; i<3; i++)
+	            {		        
+		        	robot.delay(3000);
+		        	pt = MouseInfo.getPointerInfo();
+		        	System.out.println("2번문항_"+i+" : " + pt.getLocation());
+		        }
+	            
+	            robot.delay(2000);
+	            robot.mouseWheel(5);
+		        robot.delay(3000);
+		        for(int i = 0; i<3; i++)
+	            {		        
+		        	robot.delay(3000);
+		        	pt = MouseInfo.getPointerInfo();
+		        	System.out.println("3번문항_"+i+" : " + pt.getLocation());
+		        }
+	            
+	            robot.delay(2000);
+	            robot.mouseWheel(3);
+		        robot.delay(3000);
+		        for(int i = 0; i<3; i++)
+	            {		        
+		        	robot.delay(3000);
+		        	pt = MouseInfo.getPointerInfo();
+		        	System.out.println("4번문항_"+i+" : " + pt.getLocation());
+		        }
+	            
+	            robot.delay(2000);
+	            robot.mouseWheel(4);
+		        robot.delay(3000);
+		        for(int i = 0; i<3; i++)
+	            {		        
+		        	robot.delay(3000);
+		        	pt = MouseInfo.getPointerInfo();
+		        	System.out.println("5번문항_"+i+" : " + pt.getLocation());
+		        }
+		        
+	            robot.delay(2000);
+	            robot.mouseWheel(4);
+		        robot.delay(3000);
+		        for(int i = 0; i<3; i++)
+	            {		        
+		        	robot.delay(3000);
+		        	pt = MouseInfo.getPointerInfo();
+		        	System.out.println("6번문항_"+i+" : " + pt.getLocation());
+		        }
+		        
+	            robot.delay(2000);
+	            robot.mouseWheel(3);
+		        robot.delay(3000);
+		        for(int i = 0; i<3; i++)
+	            {		        
+		        	robot.delay(3000);
+		        	pt = MouseInfo.getPointerInfo();
+		        	System.out.println("7번문항_"+i+" : " + pt.getLocation());
+		        }
+		        
+	            robot.delay(2000);
+	            robot.mouseWheel(4);
+	            robot.delay(3000);
+		        for(int i = 0; i<3; i++)
+	            {		        
+		        	robot.delay(3000);
+		        	pt = MouseInfo.getPointerInfo();
+		        	System.out.println("8번문항_"+i+" : " + pt.getLocation());
+		        }
+		        
+	            robot.delay(2000);
+	            robot.mouseWheel(3);
+	            robot.delay(3000);
+		        for(int i = 0; i<3; i++)
+	            {		        
+		        	robot.delay(3000);
+		        	pt = MouseInfo.getPointerInfo();
+		        	System.out.println("9번문항_"+i+" : " + pt.getLocation());
+		        }
+		        
+	            robot.delay(2000);
+	            robot.mouseWheel(4);
+	            robot.delay(3000);
+		        for(int i = 0; i<3; i++)
+	            {		        
+		        	robot.delay(3000);
+		        	pt = MouseInfo.getPointerInfo();
+		        	System.out.println("10번문항_"+i+" : " + pt.getLocation());
+		        }
+		        
+	            robot.delay(2000);
+	            robot.mouseWheel(4);
+	            robot.delay(3000);
+		        for(int i = 0; i<3; i++)
+	            {		        
+		        	robot.delay(3000);
+		        	pt = MouseInfo.getPointerInfo();
+		        	System.out.println("11번문항_"+i+" : " + pt.getLocation());
+		        }
+		        
+	            robot.delay(2000);
+	            robot.mouseWheel(4);
+	            robot.delay(3000);
+		        for(int i = 0; i<3; i++)
+	            {		        
+		        	robot.delay(3000);
+		        	pt = MouseInfo.getPointerInfo();
+		        	System.out.println("12번문항_"+i+" : " + pt.getLocation());
+		        }
+		        */
+	            
+	            /*}*/
+
+		      
+
+		        
+		        
+	        }catch (AWTException e) {
 	            e.printStackTrace();
 	        }
-	    }
+	        
+	  }
 	
 	 
 
-
-	    }
+}
